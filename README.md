@@ -19,9 +19,7 @@
 3. [Problématique](#3-problématique)
 4. [Méthodologie](#4-méthodologie)
 5. [Description du projet](#5-description-du-projet)
-6. [Tests de connexion](#6-tests-de-connexion)
-7. [Récapitulatif des mesures](#7-récapitulatif-des-mesures)
-8. [Conclusion](#8-conclusion)
+6. [Conclusion](#6-conclusion)
 
 ---
 
@@ -347,47 +345,6 @@ ssh -p 2222 autreuser@IP_SERVEUR
 
 **Screenshot :**
 ![Utilisateur non autorisé refusé](../screenshots/allowusers_refuse.png)
-
----
-
-## 7. Tests de connexion
-
-### Récapitulatif des tests effectués
-
-| Test | Commande utilisée | Résultat attendu | Résultat obtenu |
-|------|-------------------|-----------------|-----------------|
-| Connexion par clé | `ssh -p 2222 -i ~/.ssh/id_ed25519 user@IP` | Succès | _(À remplir)_ |
-| Connexion par mot de passe | `ssh -p 2222 user@IP` (sans clé) | Refusé | _(À remplir)_ |
-| Connexion root | `ssh -p 2222 root@IP` | Refusé | _(À remplir)_ |
-| Connexion port 22 | `ssh -p 22 user@IP` | Connection refused | _(À remplir)_ |
-| Connexion nouveau port | `ssh -p 2222 user@IP` | Succès | _(À remplir)_ |
-| Brute-force → Fail2ban | 3 échecs consécutifs | IP bannie | _(À remplir)_ |
-| Utilisateur non autorisé | `ssh -p 2222 autreuser@IP` | Refusé | _(À remplir)_ |
-
-### Script de test automatisé
-
-Le script `scripts/test_connexion.sh` a été utilisé pour automatiser ces tests.
-
-```bash
-# Exécution du script de test
-chmod +x scripts/test_connexion.sh
-./scripts/test_connexion.sh
-```
-
-> **À remplir :** Collez ici la sortie du script ou décrivez les résultats observés.
-
----
-
-## 8. Récapitulatif des mesures
-
-| Mesure de sécurité | Directive sshd_config | Valeur appliquée | Statut |
-|--------------------|-----------------------|-----------------|--------|
-| Authentification par clé | `PubkeyAuthentication` | `yes` | _(✅ / ❌)_ |
-| Mot de passe désactivé | `PasswordAuthentication` | `no` | _(✅ / ❌)_ |
-| Login root désactivé | `PermitRootLogin` | `no` | _(✅ / ❌)_ |
-| Port SSH modifié | `Port` | _(votre port)_ | _(✅ / ❌)_ |
-| Fail2ban actif | `jail.local` configuré | maxretry=3 | _(✅ / ❌)_ |
-| Utilisateurs restreints | `AllowUsers` | _(vos users)_ | _(✅ / ❌)_ |
 
 ---
 
