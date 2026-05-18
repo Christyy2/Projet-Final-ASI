@@ -30,9 +30,9 @@
 ### Contexte
 
 La sécurisation des accès distants constitue l'une des priorités fondamentales de l'administration système moderne. SSH (Secure Shell) est le protocole de référence pour la gestion à distance des serveurs Linux, mais sa configuration par défaut n'offre pas un niveau de sécurité optimal face aux menaces actuelles telles que les attaques par force brute, les tentatives d'intrusion automatisées ou l'exploitation de comptes privilégiés.
- 
+
 Dans le cadre de ce projet, réalisé en équipe de trois personnes, nous avons mis en place un environnement de laboratoire sur VirtualBox afin d'expérimenter concrètement le durcissement (hardening) d'un serveur OpenSSH. 
- 
+
 Ce rapport documente l'ensemble des étapes réalisées : l'authentification par clé cryptographique, la désactivation du compte root, le changement du port SSH, l'installation de Fail2ban, et la limitation des utilisateurs autorisés. Pour chaque étape, nous présentons la configuration appliquée ainsi que les résultats des tests de connexion effectués.
 
 
@@ -54,7 +54,7 @@ L'objectif principal de ce projet est de renforcer la sécurité d'un serveur Op
 
 ## 3. Problématique
 Les serveurs exposés sur Internet sont continuellement soumis à des tentatives d'intrusion automatisées. Les robots (bots) scannent en permanence le port 22, tentent de se connecter avec des identifiants par défaut ou lancent des attaques par dictionnaire sur des comptes actifs, notamment root. Une configuration SSH par défaut laisse donc la porte ouverte à de nombreuses vulnérabilités.
-  
+
 La problématique de ce projet peut ainsi se formuler de la manière suivante : Comment sécuriser efficacement un serveur OpenSSH en appliquant plusieurs couches de protection complémentaires ?
 
 ---
