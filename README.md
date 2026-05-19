@@ -1,4 +1,4 @@
-# Projet-Final-ASI
+<img width="1677" height="88" alt="image" src="https://github.com/user-attachments/assets/6b7b8a80-81e8-454f-baa7-55adc118e838" /><img width="999" height="88" alt="image" src="https://github.com/user-attachments/assets/56f593e3-c4f5-440a-afc4-bf3eddc32d9c" /><img width="787" height="70" alt="image" src="https://github.com/user-attachments/assets/e11c6a0f-f5a4-4ce5-8703-e78bb481bd22" /># Projet-Final-ASI
 **Université :** Institut Universitaire Des Sciences (IUS)  
 **Faculté :** Faculté des Sciences et des Technologies (FST)  
 **Préparé par :**  
@@ -82,56 +82,9 @@ Remplacer l'authentification par mot de passe (vulnérable aux attaques par forc
 
 #### Étapes réalisées
 
-##### 1.1 Génération de la paire de clés (depuis la machine personnelle)
-
-```bash
-ssh-keygen -t ed25519 -C "admin@serveur-ssh"
-
-# Résultat attendu :
-# Generating public/private ed25519 key pair.
-# Enter file in which to save the key (/home/user/.ssh/id_ed25519):
-# Enter passphrase (empty for no passphrase): [entrez une passphrase]
-```
-
-> **À remplir :** Décrivez ici ce que vous avez observé lors de la génération. Quel chemin avez-vous choisi pour la clé ?
-
-##### 1.2 Déploiement de la clé publique sur le serveur
-
-```bash
-# Méthode 1 : avec ssh-copy-id (recommandé)
-ssh-copy-id -i ~/.ssh/id_ed25519.pub utilisateur@IP_SERVEUR
-
-# Méthode 2 : manuellement (si ssh-copy-id non disponible)
-cat ~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys
-chmod 600 ~/.ssh/authorized_keys
-```
-
-> **À remplir :** Quelle méthode avez-vous utilisée ? Y a-t-il eu des erreurs ?
-
-##### 1.3 Modification du fichier sshd_config
-
-Fichier modifié : `/etc/ssh/sshd_config`
-
-```
-PubkeyAuthentication yes
-PasswordAuthentication no
-AuthorizedKeysFile .ssh/authorized_keys
-```
-
-```bash
-# Redémarrage du service SSH après modification
-sudo systemctl restart sshd
-
-# Vérification que le service est bien actif
-sudo systemctl status sshd
-```
-
-#### Résultat obtenu
-
-> **À remplir :** La connexion par clé fonctionne-t-elle ? La connexion par mot de passe est-elle bien refusée ?
-
-**Screenshot :**
-![Connexion SSH par clé réussie](../screenshots/auth_cle_reussie.png)
+##### 1.1 Génération d’une paire de clé (publique et privé)
+##### 1.2 Copie de la clé publique sur le serveur
+##### 1.3 Test de la connexion par clé avant de continuer 
 
 ---
 
@@ -144,31 +97,9 @@ Le compte `root` est la cible principale des attaques automatisées. Le désacti
 #### Étapes réalisées
 
 ##### 2.1 Modification du fichier sshd_config
-
-```
-PermitRootLogin no
-```
-
-```bash
-sudo systemctl restart sshd
-```
-
-##### 2.2 Test de vérification — connexion root (doit être refusée)
-
-```bash
-ssh root@IP_SERVEUR -p PORT_SSH
-
-# Message attendu :
-# Permission denied (publickey).
-# ou : root@IP_SERVEUR: Permission denied
-```
-
-#### Résultat obtenu
-
-> **À remplir :** La connexion root est-elle bien refusée ? Copiez ici le message d'erreur obtenu.
-
-**Screenshot :**
-![Connexion root refusée](../screenshots/root_refuse.png)
+- PermitRootlogin no
+- PasswordAuthentication no
+- PubkeyAuthentication yes
 
 ---
 
@@ -181,58 +112,10 @@ Le port 22 est scanné en permanence par des robots automatisés. Changer le por
 #### Étapes réalisées
 
 ##### 3.1 Modification du fichier sshd_config
-
-```
-Port 2222
-```
-
 ##### 3.2 Ouverture du nouveau port dans le pare-feu AVANT de redémarrer SSH
-
-```bash
-sudo ufw allow 2222/tcp
-sudo ufw status
-```
-
 ##### 3.3 Redémarrage du service SSH
-
-```bash
-sudo systemctl restart sshd
-```
-
-> **Note importante — Ubuntu récent :** Sur les versions récentes d'Ubuntu, SSH est géré par un **socket systemd** qui contrôle le port, et non uniquement par `sshd_config`. Si le changement de port n'a pas d'effet, il faut modifier le socket SSH :
-
-```bash
-sudo systemctl edit ssh.socket
-```
-
-Dans l'éditeur qui s'ouvre, coller exactement ceci :
-
-```ini
-[Socket]
-ListenStream=
-ListenStream=2222
-```
-
-##### 3.4 Vérification et test depuis un autre terminal
-
-```bash
-# Vérifier que SSH écoute sur le nouveau port
-ss -tlnp | grep sshd
-
-# Tester la connexion sur le nouveau port
-ssh -p 2222 utilisateur@IP_SERVEUR
-
-# Vérifier que l'ancien port 22 est bien fermé
-ssh -p 22 utilisateur@IP_SERVEUR
-# Message attendu : Connection refused
-```
-
-#### Résultat obtenu
-
-> **À remplir :** Le nouveau port fonctionne-t-il ? L'ancien port 22 est-il bien inaccessible ?
-
-**Screenshot :**
-![Connexion sur le nouveau port](../screenshots/nouveau_port.png)
+> **Note importante :** Sur les versions récentes d'Ubuntu, SSH est géré par un **socket systemd** qui contrôle le port, et non uniquement par `sshd_config`. Si le changement de port n'a pas d'effet, il faut modifier le socket SSH :
+##### 3.4 TEST DEPUIS UN AUTRE TERMINAL(Mon ordinateur personnel)!
 
 ---
 
@@ -244,68 +127,11 @@ Fail2ban surveille les journaux SSH et bloque automatiquement les adresses IP qu
 
 #### Étapes réalisées
 
-##### 4.1 Installation
-
-```bash
-sudo apt update
-sudo apt install fail2ban -y
-```
-
+##### 4.1 Update du Serveur et Installation de Fail2ban
 ##### 4.2 Création du fichier de configuration local
-
-> **Important :** Ne jamais modifier `jail.conf` directement. Créer un fichier `jail.local` qui le surcharge.
-
-```bash
-sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-sudo nano /etc/fail2ban/jail.local
-```
-
 ##### 4.3 Modification de la section [sshd]
-
-```ini
-[DEFAULT]
-bantime  = 3600
-findtime = 600
-maxretry = 3
-
-[sshd]
-enabled  = true
-port     = 2222
-logpath  = /var/log/auth.log
-backend  = systemd
-```
-
 ##### 4.4 Activation et démarrage de Fail2ban
-
-```bash
-sudo systemctl enable fail2ban
-sudo systemctl restart fail2ban
-```
-
-##### 4.5 Vérification du statut
-
-```bash
-sudo fail2ban-client status
-sudo fail2ban-client status sshd
-```
-
-##### 4.6 Test du bannissement
-
-```bash
-# Simuler plusieurs connexions échouées (répéter 3 fois)
-ssh utilisateur_inexistant@IP_SERVEUR -p 2222
-
-# Vérifier que l'IP est bien bannie
-sudo fail2ban-client status sshd
-# La section "Banned IP list" doit afficher l'IP testée
-```
-
-#### Résultat obtenu
-
-> **À remplir :** Combien de tentatives avant le ban ? L'IP est-elle bien apparue dans la liste des adresses bannies ?
-
-**Screenshot :**
-![Fail2ban - IP bannie](../screenshots/fail2ban_ban.png)
+##### 4.5 Vérification du statut de Fail2ban
 
 ---
 
@@ -318,33 +144,7 @@ Restreindre les connexions SSH uniquement aux utilisateurs explicitement listés
 #### Étapes réalisées
 
 ##### 5.1 Modification du fichier sshd_config
-
-```
-AllowUsers adminuser
-# Exemple avec plusieurs utilisateurs : AllowUsers alice bob charlie
-```
-
-```bash
-sudo systemctl restart sshd
-```
-
 ##### 5.2 Tests de vérification
-
-```bash
-# Test 1 : connexion avec un utilisateur AUTORISÉ → doit réussir
-ssh -p 2222 adminuser@IP_SERVEUR
-
-# Test 2 : connexion avec un utilisateur NON AUTORISÉ → doit échouer
-ssh -p 2222 autreuser@IP_SERVEUR
-# Message attendu : Permission denied
-```
-
-#### Résultat obtenu
-
-> **À remplir :** Les utilisateurs non autorisés sont-ils bien bloqués ? Quel message d'erreur obtenez-vous ?
-
-**Screenshot :**
-![Utilisateur non autorisé refusé](../screenshots/allowusers_refuse.png)
 
 ---
 
