@@ -1,4 +1,4 @@
-<img width="1677" height="88" alt="image" src="https://github.com/user-attachments/assets/6b7b8a80-81e8-454f-baa7-55adc118e838" /><img width="999" height="88" alt="image" src="https://github.com/user-attachments/assets/56f593e3-c4f5-440a-afc4-bf3eddc32d9c" /><img width="787" height="70" alt="image" src="https://github.com/user-attachments/assets/e11c6a0f-f5a4-4ce5-8703-e78bb481bd22" /># Projet-Final-ASI
+# Projet-Final-ASI
 **Université :** Institut Universitaire Des Sciences (IUS)  
 **Faculté :** Faculté des Sciences et des Technologies (FST)  
 **Préparé par :**  
@@ -6,7 +6,7 @@
 - Christy Gérys LAMBERT  
 - Lens Sandro PETIOTE  
 
-**Sous la Direction de :** M.Ismael SAINT-AMOUR 
+**Sous la Direction de :** M.Ismaël SAINT-AMOUR 
 
 **Date :** 18 mai 2026  
 
@@ -115,7 +115,7 @@ Le port 22 est scanné en permanence par des robots automatisés. Changer le por
 ##### 3.2 Ouverture du nouveau port dans le pare-feu AVANT de redémarrer SSH
 ##### 3.3 Redémarrage du service SSH
 > **Note importante :** Sur les versions récentes d'Ubuntu, SSH est géré par un **socket systemd** qui contrôle le port, et non uniquement par `sshd_config`. Si le changement de port n'a pas d'effet, il faut modifier le socket SSH :
-##### 3.4 TEST DEPUIS UN AUTRE TERMINAL(Mon ordinateur personnel)!
+##### 3.4 Test depuis un autre Terminal (Mon ordinateur personnel)
 
 ---
 
@@ -150,71 +150,6 @@ Restreindre les connexions SSH uniquement aux utilisateurs explicitement listés
 
 ## 9. Conclusion
 
-### Ce que nous avons réalisé
-
-> **À remplir :** Résumez en quelques phrases les 5 mesures que vous avez appliquées et leur effet sur la sécurité du serveur.
-
-### Difficultés rencontrées
-
-> **À remplir :** Décrivez les problèmes rencontrés pendant le projet. Par exemple :
-> - Erreur lors du redémarrage de SSH après modification du port
-> - Fail2ban ne détectait pas les logs au bon endroit
-> - Clé SSH non reconnue (problème de permissions sur authorized_keys)
-
-### Ce que nous avons appris
-
-> **À remplir :** Qu'est-ce que ce projet vous a appris sur l'administration système et la sécurité SSH ?
-
-### Perspectives d'amélioration
-
-Pour aller plus loin dans le durcissement du serveur, on pourrait envisager :
-
-- **Authentification à deux facteurs (2FA)** avec Google Authenticator + PAM
-- **Port knocking** : le port SSH ne s'ouvre que sur une séquence de paquets spécifique
-- **Restriction par adresse IP** avec `AllowUsers user@192.168.1.*`
-- **Désactivation des algorithmes de chiffrement faibles** dans sshd_config
-- **Audit régulier** des logs avec `journalctl -u ssh`
-
 ---
 
-## Annexes
 
-### Fichier sshd_config complet (après durcissement)
-
-```
-# /etc/ssh/sshd_config – Configuration durcie
-# Généré dans le cadre du Projet 6 – FST
-
-Port 2222                        # Remplacez par votre port
-AddressFamily inet
-ListenAddress 0.0.0.0
-
-# Authentification
-PermitRootLogin no
-PubkeyAuthentication yes
-AuthorizedKeysFile .ssh/authorized_keys
-PasswordAuthentication no
-PermitEmptyPasswords no
-ChallengeResponseAuthentication no
-
-# Restriction des utilisateurs
-AllowUsers adminuser             # Remplacez par vos utilisateurs
-
-# Timeout et sessions
-LoginGraceTime 30
-MaxAuthTries 3
-MaxSessions 5
-ClientAliveInterval 300
-ClientAliveCountMax 2
-
-# Désactiver les fonctions non utilisées
-X11Forwarding no
-AllowTcpForwarding no
-```
-
-### Références
-
-- Documentation officielle OpenSSH : https://www.openssh.com/manual.html
-- Manuel sshd_config : `man sshd_config`
-- Documentation Fail2ban : https://www.fail2ban.org/wiki/index.php/MANUAL_0_8
-- Guide de durcissement SSH (ANSSI) : https://www.ssi.gouv.fr
