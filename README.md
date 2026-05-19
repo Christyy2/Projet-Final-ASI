@@ -150,8 +150,11 @@ Restreindre les connexions SSH uniquement aux utilisateurs explicitement listés
 
 ## 9. Conclusion
 Ce projet de durcissement d'un serveur OpenSSH nous a permis de mettre en pratique de façon concrète les principes fondamentaux de la sécurité système. À travers cinq mesures complémentaires authentification par clé, désactivation du root, changement de port, déploiement de Fail2ban et limitation des utilisateurs, nous avons construit une configuration SSH robuste et défensive en profondeur.
+
 L'environnement VirtualBox a fourni un terrain d'expérimentation idéal, nous permettant de tester chaque modification sans risque, de simuler des attaques et de valider les mécanismes de défense mis en place. Chacune des mesures appliquées a été vérifiée par des tests de connexion documentés, dont les résultats confirment l'efficacité du durcissement.
+
 Durant la mise en œuvre, le changement de port SSH a provoqué des erreurs de redémarrage du service. Fail2ban ne détectait pas les journaux au bon emplacement et a nécessité un ajustement. Enfin, des permissions incorrectes sur authorized_keys empêchaient la reconnaissance des clés SSH.
+
 En conclusion, ce projet illustre que la sécurité n'est pas un état binaire, mais un processus continu d'amélioration. Les mesures mises en place constituent une base solide, que des solutions plus avancées comme l'authentification à deux facteurs ou l'automatisation Ansible pourraient renforcer davantage dans un environnement de production.
 
 
